@@ -1,7 +1,6 @@
 // Private. Will not be included in submission
 module.exports = {
-  host: "fling.seas.upenn.edu",
-  user: "priyansh",
-  password: "TheSh@rma101",
-  database: "priyansh"
+  user: "admin",
+  password: "durgej-Netsaq-kostu9",
+  connectionString: "cis550proj.ccdfsqisarbm.us-east-1.rds.amazonaws.com:1521/NYCBNB"
 };
