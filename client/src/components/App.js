@@ -4,9 +4,11 @@ import {
 	Route,
 	Switch
 } from 'react-router-dom';
-import logo from './logo.svg';
-import './App.css';
-import Welcome from './Welcome'
+import '../style/App.css';
+import Welcome from './Welcome';
+import Airbnb from './Airbnb';
+import Bar from './Bar';
+import Party from './Party';
 
 class App extends Component {
   render() {
@@ -21,22 +23,16 @@ class App extends Component {
             />
             <Route
               exact
-              path="/bars"
-              render={() =>                 <div className="App">
-              <h1>Hello, React!</h1>
-            </div>}
+              path="/airbnbs"
+              render={() => (<Airbnb />)}
             />
             <Route
-              path="/airbnb"
-              render={() =>                 <div className="App">
-              <h1>Hello, React!</h1>
-            </div>}
+              path="/bars"
+              render={() => (<Bar />)}
             />
             <Route
               path="/parties"
-              render={() =>                 <div className="App">
-              <h1>Hello, React!</h1>
-            </div>}
+              render={() => (<Party />)}
             />
           </Switch>
         </Router>

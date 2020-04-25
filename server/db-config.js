@@ -1,4 +1,3 @@
-// Private. Will not be included in submission
 module.exports = {
   user: "admin",
   password: "durgej-Netsaq-kostu9",

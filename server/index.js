@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 
 /* ---- (oracle connection) ---- */
-app.get('/connection', routes.testConnection);
+app.get('/airbnbs', routes.bnbTest);
 
 
 app.listen(8081, () => {
