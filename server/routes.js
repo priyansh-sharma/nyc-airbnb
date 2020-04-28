@@ -1,5 +1,31 @@
 const oracledb = require('oracledb');
 const dbConfig = require('./db-config.js');
+const { User } = require('./models/user')
+
+
+/* -------------------------------------------------- */
+/* ------------------- Authentication --------------- */
+/* -------------------------------------------------- */
+
+function signup(req, res){
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password
+  }).save((err, response)=>{
+    if (err) res.status(400).send(err)
+    res.status(200).send(response)
+  })
+}
+
+function login(req, res){
+  User.findOne({'username': req.body.username}, (err, user) => {
+    if (!user) res.json({message: 'this user does not exist'})
+    if(req.body.password = user.password){
+      res.status(200).send('logged in!')
+    }
+  })
+}
+
 
 /* -------------------------------------------------- */
 /* ------------------- Route Handlers --------------- */
@@ -71,6 +97,8 @@ async function bnbTest(req, res) {
 module.exports = {
     testConnection: testConnection,
     bnbTest: bnbTest,
+    signup: signup,
+    login: login
     //noiseTest: noiseTest,
     //barsTest: barsTest
 }
