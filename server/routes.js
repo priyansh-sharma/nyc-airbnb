@@ -63,6 +63,14 @@ async function testConnection(req, res) {
   }
 };
 
+async function bnb(req, res) {
+  let connection;
+
+  connection = await oracledb.getConnection(dbConfig);
+
+  
+}
+
 async function bnbTest(req, res) {
     let connection;
 
