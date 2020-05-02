@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import '../style/App.css';
 import Welcome from './Welcome';
+import Signup from './Signup';
 import Airbnb from './Airbnb';
 import Bar from './Bar';
 import Party from './Party';
@@ -20,6 +21,11 @@ class App extends Component {
               exact
               path="/"
               render={() => (<Welcome />)}
+            />
+            <Route
+              exact
+              path="/signup"
+              render={() => (<Signup />)}
             />
             <Route
               exact
