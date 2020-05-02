@@ -34,11 +34,11 @@ app.post('/airbnb', routes.bnb);
 
 app.post('/bars', routes.bars);
 
-app.post('/party', routes.party);
+// app.post('/party', routes.party);
 
-app.get('/recommend', routes.recommend);
+// app.get('/recommend', routes.recommend);
 
-app.get('/about', routes.about);
+// app.get('/about', routes.about);
 
 
 

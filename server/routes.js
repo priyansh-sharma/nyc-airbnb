@@ -68,7 +68,51 @@ async function bnb(req, res) {
 
   connection = await oracledb.getConnection(dbConfig);
 
+  query = 
+  `SELECT id, name, host_name, price, latitude, longitude FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}'
+  AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type = '${req.body.room_type}' AND
+  price BETWEEN '${req.body.min_price}' AND '${req.body.max_price}'
+  ORDER BY name`
+
+  result = await connection.execute(query);
+
+  res.send(result);
+
+  await connection.close();
+}
+
+async function bars(req, res) {
+  let connection;
+
+  connection = await oracledb.getConnection(dbConfig);
+  if (!req.body.bars){
+    query = 
+      `SELECT id, name, host_name, price, latitude, longitude, bar_count FROM AIRBNB_NYC
+      WHERE neighbourhood_group = '${req.body.borough}' AND
+        neighbourhood = '${req.body.neighborhood}' AND 
+        room_type = '${req.body.room_type}' AND
+        price BETWEEN '${req.body.min_price}' AND '${req.body.max_price}'
+        AND ROWNUM <= 5
+      ORDER BY bar_count`
+  } else {
+    query =
+    `SELECT id, name, host_name, price, latitude, longitude, bar_count FROM AIRBNB_NYC
+      WHERE neighbourhood_group = '${req.body.borough}' AND
+        neighbourhood = '${req.body.neighborhood}' AND 
+        room_type = '${req.body.room_type}' AND
+        price BETWEEN '${req.body.min_price}' AND '${req.body.max_price}'
+        AND ROWNUM <= 5
+      ORDER BY bar_count DESC`
+  }
   
+  result = await connection.execute(query);
+
+  res.send(result);
+
+  await connection.close();
 }
 
 async function bnbTest(req, res) {
@@ -106,7 +150,9 @@ module.exports = {
     testConnection: testConnection,
     bnbTest: bnbTest,
     signup: signup,
-    login: login
+    login: login,
+    bnb: bnb,
+    bars: bars
     //noiseTest: noiseTest,
     //barsTest: barsTest
 }
