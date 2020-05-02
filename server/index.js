@@ -22,11 +22,24 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 
 /* ---- (oracle connection) ---- */
+app.get('/dbconnect', routes.testConnection);
+
 app.get('/airbnbs', routes.bnbTest);
 
 app.post('/signup', routes.signup);
 
 app.post('/login', routes.login);
+
+app.post('/airbnb', routes.bnb);
+
+app.post('/bars', routes.bars);
+
+app.post('/party', routes.party);
+
+app.get('/recommend', routes.recommend);
+
+app.get('/about', routes.about);
+
 
 
 app.listen(8081, () => {
