@@ -1,24 +1,29 @@
 import React, { Component } from 'react';
 import {
-  Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button
-} from 'reactstrap';
+  Card, ListGroup, ListGroupItem
+} from 'react-bootstrap';
 
 class ListingCard extends Component {
     constructor (props) {
         super(props);
     }
+
     render () {
         return (
-            <div>
             <Card>
-                <CardBody>
-                    <CardTitle>{this.props.id}</CardTitle>
-                    <CardSubtitle>{this.props.name}</CardSubtitle>
-                    <CardText>Lorem Ipsum</CardText>
-                </CardBody>
-            </Card>
-            </div>
+            <Card.Body>
+              <Card.Title>{this.props.name}</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted">{this.props.borough}, NY</Card.Subtitle>
+            </Card.Body>
+            <ListGroup className="list-group-flush">
+                <ListGroupItem>{this.props.room_type}</ListGroupItem>
+                <ListGroupItem>${this.props.price}</ListGroupItem>
+                <ListGroupItem>Hosted by {this.props.host}</ListGroupItem>
+            </ListGroup>
+            <Card.Footer>
+        <small className="text-muted">{this.props.lat}, {this.props.long}</small>
+    </Card.Footer>
+        </Card>
         );
     }
 }

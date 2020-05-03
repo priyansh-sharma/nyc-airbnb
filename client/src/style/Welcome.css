@@ -62,6 +62,8 @@
     line-height: 20px;
     font-size: 17px;
     color: #999;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .logo {
@@ -74,7 +76,7 @@
 .field-input {
     width: 100%;
     position: relative;
-    margin-bottom: 35px;
+    margin-bottom: 20px;
     border-bottom: 2px solid #adadad;
 }
 
@@ -125,10 +127,11 @@
     top: 16px;
     left: 0px;
     padding-left: 5px;
+    align-content: initial;
 
     content: attr(placeholder);
     display: block;
-    width: 100%;
+    width: 140px;
     position: absolute;
 
     -webkit-transition: all 0.4s;

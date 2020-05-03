@@ -12,16 +12,22 @@ function signup(req, res){
     username: req.body.username,
     password: req.body.password
   }).save((err, response)=>{
+    console.log("madetosignup");
     if (err) res.status(400).send(err)
-    res.status(200).send(response)
+    else {
+      res.status(200).send(response)
+    }
   })
 }
 
 function login(req, res){
   User.findOne({'username': req.body.username}, (err, user) => {
-    if (!user) res.json({message: 'this user does not exist'})
-    if(req.body.password = user.password){
+    console.log("madeit");
+    if (!user) res.status(400).send(err)
+    else if(req.body.password = user.password){
       res.status(200).send('logged in!')
+    } else {
+      res.status(400).send(err)
     }
   })
 }
@@ -106,7 +112,8 @@ module.exports = {
     testConnection: testConnection,
     bnbTest: bnbTest,
     signup: signup,
-    login: login
+    login: login,
+    bnb: bnb
     //noiseTest: noiseTest,
     //barsTest: barsTest
 }

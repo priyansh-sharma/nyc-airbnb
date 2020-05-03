@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 
 const app = express();
 
-const mongourl = 'mongodb+srv://admin:davweq-heRqon-nuphi8@550cluster-p0sye.mongodb.net/test?retryWrites=true&w=majority'
+const mongourl = 'mongodb+srv://jessexu:powqy4-xeNrex-hokwim@550cluster-p0sye.mongodb.net/test?retryWrites=true&w=majority'
 mongoose.connect(mongourl)
 .then(console.log("mongodb connected"))
 
@@ -32,13 +32,13 @@ app.post('/login', routes.login);
 
 app.post('/airbnb', routes.bnb);
 
-app.post('/bars', routes.bars);
+// app.post('/bars', routes.bars);
 
-app.post('/party', routes.party);
+// app.post('/party', routes.party);
 
-app.get('/recommend', routes.recommend);
+// app.get('/recommend', routes.recommend);
 
-app.get('/about', routes.about);
+// app.get('/about', routes.about);
 
 
 

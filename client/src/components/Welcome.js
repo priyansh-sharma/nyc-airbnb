@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 import '../style/Welcome.css';
-// import '../style/NoisYC.png';
 
 export default class Welcome extends Component {
   constructor(props) {
@@ -9,70 +9,95 @@ export default class Welcome extends Component {
 		this.state = {
 			username: "",
 			password: ""
-		};
+    };
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.submitCredentials = this.submitCredentials.bind(this);
   }
 
   submitCredentials() {
-    let username = this.state.username;
-    let password = this.state.password;
-
-
+    let credentials = {username : this.state.username, password : this.state.password};
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+    };
+    console.log("request made");
+    fetch('http://localhost:8081/login', requestOptions)
+    .then(res => {
+      if (res.ok) {
+        this.setState({redirect: true});
+      } else {
+        alert("Check your credentials");
+      }
+    }, err => {
+      console.log(err);
+    });
   }
-  
-  // componentDidMount() {
-  //   // Send an HTTP request to the server.
-  //   fetch("http://localhost:8081/connection",
-  //   {
-  //     method: 'GET' // The type of HTTP request.
-  //   }).then(res => {
-  //     // Convert the response data to a JSON.
-  //     return res.text();
-  //   }, err => {
-  //     // Print the error if there is one.
-  //     console.log(err);
-  //   }).then(res => console.log(res))
-  // }
+
+  handleChange(e) {
+    let target = e.target;
+    this.setState({
+      [target.name]: target.value
+    });
+  }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect push to="/airbnbs" />;
+    }
     return(
       <div>
         <div className="login-container">
           <div className="login-panel">
-            <form className="login-form">
+            <form className="login-form"
+            onSubmit={this.submitCredentials}>
               <img className="logo" src={require('..\\style\\NoisYC.png')} alt="Logo"></img>
                 
-              <p class="appdescription"> Find some peace and quiet in the city that never sleeps.
+              <p className="appdescription"> Find some peace and quiet in the city that never sleeps.
                 </p>
 
-              <div class="field-input">
-                <input class="input" type="text" name="username"></input>
-                <span class="input-focus" placeholder="Username"></span>
+              <div className="field-input">
+                <input 
+                className="input" 
+                type="text" 
+                name="username"
+                value={this.state.username}
+                onChange={this.handleChange}
+                ></input>
+                <span className="input-focus" placeholder="Username"></span>
               </div>
 
-              <div class="field-input">
-                <input class="input" type="password" name="password"></input>
-                <span class="input-focus" placeholder="Password"></span>
+              <div className="field-input">
+                <input 
+                className="input" 
+                type="password" 
+                name="password"
+                value={this.state.password}
+                onChange={this.handleChange}></input>
+                <span className="input-focus" placeholder="Password"></span>
               </div>
-
-              <div class="login-btn-container">
-                <div class="login-btn-wrap">
-                  <button class="login-btn">
+            </form>
+              <div className="login-btn-container">
+                <div className="login-btn-wrap">
+                  <button className="login-btn"
+                  onClick={this.submitCredentials}>
                     Login
                   </button>
                 </div>
               </div>
 
-              <div class="page-break">
-                <span class="no-account">
+              <div className="page-break">
+                <span className="no-account">
                   Don’t have an account?
                 </span>
 
-                <a class="signup" href="/signup">
+                <a className="signup" href="/signup">
                   Sign Up
                 </a>
               </div>
 
-            </form>
+            
             
           </div>
         </div>
