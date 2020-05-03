@@ -25,7 +25,7 @@ export default class Signup extends Component {
               <span className="title">
                 Welcome
               </span>
-              <img className="logo" src={require('..\\style\\NoisYC.png')} alt="Logo"></img>
+              <img className="logo" src={require('../style/NoisYC.png')} alt="Logo"></img>
                 
               <div class="field-input">
                 <input class="input" type="text" name="username"></input>

@@ -1,4 +1,6 @@
 const oracledb = require('oracledb');
+oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+oracledb.autoCommit = true;
 const dbConfig = require('./db-config.js');
 const { User } = require('./models/user')
 
@@ -84,29 +86,41 @@ async function bnb(req, res) {
   await connection.close();
 }
 
-async function bars(req, res) {
+async function fewbars(req, res) {
   let connection;
 
   connection = await oracledb.getConnection(dbConfig);
-  if (!req.body.bars){
-    query = 
-      `SELECT id, name, host_name, price, latitude, longitude, bar_count FROM AIRBNB_NYC
-      WHERE neighbourhood_group = '${req.body.borough}' AND
-        neighbourhood = '${req.body.neighborhood}' AND 
-        room_type = '${req.body.room_type}' AND
-        price BETWEEN '${req.body.min_price}' AND '${req.body.max_price}'
-        AND ROWNUM <= 5
-      ORDER BY bar_count`
-  } else {
-    query =
-    `SELECT id, name, host_name, price, latitude, longitude, bar_count FROM AIRBNB_NYC
-      WHERE neighbourhood_group = '${req.body.borough}' AND
-        neighbourhood = '${req.body.neighborhood}' AND 
-        room_type = '${req.body.room_type}' AND
-        price BETWEEN '${req.body.min_price}' AND '${req.body.max_price}'
-        AND ROWNUM <= 5
-      ORDER BY bar_count DESC`
-  }
+
+  reset = `UPDATE AIRBNB_NYC SET bar_count = NULL, party_count = NULL`
+
+  await connection.execute(reset);
+
+  update = `UPDATE AIRBNB_NYC
+  SET bar_count = (
+  SELECT COUNT(*) FROM BARS B, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND B.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND B.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99))
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type = '${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})`
+
+  await connection.execute(update);
+  
+  query = 
+    `WITH A AS
+    (SELECT id, name, host_name, neighbourhood_group, room_type, price, latitude, longitude, bar_count FROM AIRBNB_NYC
+    WHERE neighbourhood_group = '${req.body.borough}' AND
+    neighbourhood = '${req.body.neighborhood}' AND 
+    room_type = '${req.body.room_type}' AND
+    price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
+    SELECT * FROM A
+    WHERE bar_count <= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count DESC) FROM A)
+    AND ROWNUM <= 5
+    ORDER BY bar_count, price`
   
   result = await connection.execute(query);
 
@@ -115,44 +129,56 @@ async function bars(req, res) {
   await connection.close();
 }
 
-async function bnbTest(req, res) {
-    let connection;
+async function manybars(req, res) {
+  let connection;
 
-    try {
-        connection = await oracledb.getConnection(dbConfig);
+  connection = await oracledb.getConnection(dbConfig);
 
-        // stmt0 = `CREATE TABLE AirBNB_NYC (id NUMBER(38), name VARCHAR2(128), host_id NUMBER(38), host_name VARCHAR2(26), neighborhood_group VARCHAR2(26), neighborhood VARCHAR2(26), latitude NUMBER(38, 5), longitude NUMBER(38, 5), room_type VARCHAR2(26), price NUMBER(38), minimum_nights NUMBER(38), number_of_reviews NUMBER(38), last_review VARCHAR2(26), reviews_per_month NUMBER(38, 2), calculated_host_listings_count NUMBER(38), availability_365 NUMBER(38), PRIMARY KEY (id))`
-        // stmt0 = `CREATE TABLE test (id NUMBER(38), name VARCHAR2(128))`
-        
-        stmt1 = `SELECT id, name FROM AirBNB_NYC`
+  reset = `UPDATE AIRBNB_NYC SET bar_count = NULL, party_count = NULL`
 
-        result = await connection.execute(stmt1);
+  await connection.execute(reset);
 
-        res.send(result)
+  update = `UPDATE AIRBNB_NYC
+  SET bar_count = (
+  SELECT COUNT(*) FROM BARS B, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND B.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND B.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99) )
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type = '${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})`
 
-        console.log(result)
+  await connection.execute(update);
 
-    } catch (err) {
-        console.error(err);
-    } finally {
-        if (connection) {
-            try {
-                await connection.close();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
-};
+  query =
+  `WITH A AS
+  (SELECT id, name, host_name, neighbourhood_group, room_type, price, latitude, longitude, bar_count FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type = '${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
+  SELECT * FROM A
+  WHERE bar_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count DESC) FROM A)
+  AND ROWNUM <= 5
+  ORDER BY bar_count DESC, price`
+  
+  result = await connection.execute(query);
+
+  res.send(result);
+
+  await connection.close();
+}
+
 
 // The exported functions, which can be accessed in index.js.
 module.exports = {
     testConnection: testConnection,
-    bnbTest: bnbTest,
     signup: signup,
     login: login,
     bnb: bnb,
-    bars: bars
-    //noiseTest: noiseTest,
-    //barsTest: barsTest
+    fewbars: fewbars,
+    manybars: manybars
 }

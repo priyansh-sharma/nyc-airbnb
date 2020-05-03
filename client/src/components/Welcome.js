@@ -39,7 +39,7 @@ export default class Welcome extends Component {
         <div className="login-container">
           <div className="login-panel">
             <form className="login-form">
-              <img className="logo" src={require('..\\style\\NoisYC.png')} alt="Logo"></img>
+              <img className="logo" src={require('../style/NoisYC.png')} alt="Logo"></img>
                 
               <p class="appdescription"> Find some peace and quiet in the city that never sleeps.
                 </p>
