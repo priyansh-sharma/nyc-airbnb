@@ -14,6 +14,21 @@
 }
 
 .results-form-container {
-    background-color: #cc9494;
-    width: 60%;
+    padding: 10px;
+    margin-top: 20px;
+    padding-bottom: 50px;
+    box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+    -o-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+    -ms-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
 }
+
+/* #formGridBorough {
+    min-height:190px; 
+    overflow-y :auto; 
+    overflow-x:hidden; 
+    position:absolute;
+    width:300px;
+    display: contents;
+} */

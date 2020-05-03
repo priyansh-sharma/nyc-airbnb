@@ -52,7 +52,7 @@ export default class Welcome extends Component {
           <div className="login-panel">
             <form className="login-form"
             onSubmit={this.submitCredentials}>
-              <img className="logo" src={require('..\\style\\NoisYC.png')} alt="Logo"></img>
+              <img className="logo" src={require('../style/NoisYC.png')} alt="Logo"></img>
                 
               <p className="appdescription"> Find some peace and quiet in the city that never sleeps.
                 </p>

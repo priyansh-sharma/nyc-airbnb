@@ -56,7 +56,7 @@ export default class Signup extends Component {
         <div className="login-panel">
             <form className="login-form"
             onSubmit={this.submitNewCredentials}>
-            <img className="logo" src={require('..\\style\\NoisYC.png')} alt="Logo"></img>
+            <img className="logo" src={require('../style/NoisYC.png')} alt="Logo"></img>
                 
             <p className="appdescription"> Make an account to start browsing!
                 </p>
