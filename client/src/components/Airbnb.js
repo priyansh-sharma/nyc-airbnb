@@ -8,45 +8,49 @@ constructor (props) {
     super(props);
 
     this.state = {
-        filter: {
-            borough : "",
-            price: 0
-        },
-        listings : []
+        
+      borough : "",
+      room_type: "",
+      neighborhood: "",
+      lower_price: 0,
+      higher_price: 0,
+      listings : []
     }
 
-    // this.handleFilterChange = this.handleFilterChange.bind(this);
-// this.submitFilter = this.submitFilter.bind(this);
+  this.handleFilterChange = this.handleFilterChange.bind(this);
+  this.submitFilter = this.submitFilter.bind(this);
 }
 
-// handleFilterChange(e) {
-// 	this.setState({
-// 		borough: e.target.value
-// 	});
-// }
+handleFilterChange(e) {
+	e.preventDefault();
+    let target = e.target;
+    this.setState({
+      [target.name]: target.value
+    });
+}
 
-// submitLogin() {
-// 	fetch("http://localhost:8081/airbnbs/" + JSON.stringify(this.state.filter),
-// 	{
-// 		method: "GET"
-// 	}).then(res => {
-// 		return res.json();
-// 	}, err => {
-// 		console.log(err);
-// 	}).then(airbnbsList => {
-//         let airbnbCards = airbnbsList.map((airbnb, i) => 
-//         <ListingCard 
-//         title={airbnb.title}
-//         subtitle={airbnb.subtitle}
-//         />);
+submitFilter() {
+	fetch("http://localhost:8081/airbnbs/" + JSON.stringify(this.state.filter),
+	{
+		method: "GET"
+	}).then(res => {
+		return res.json();
+	}, err => {
+		console.log(err);
+	}).then(airbnbsList => {
+        let airbnbCards = airbnbsList.map((airbnb, i) => 
+        <ListingCard 
+        title={airbnb.title}
+        subtitle={airbnb.subtitle}
+        />);
 
-//         this.setState({
-//             listings : airbnbCards
-//         });
-//     }, err => {
-//         console.log(err);
-//     });
-// }
+        this.setState({
+            listings : airbnbCards
+        });
+    }, err => {
+        console.log(err);
+    });
+}
 
 componentDidMount() {
 // Send an HTTP request to the server.
