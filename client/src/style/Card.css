@@ -1,0 +1,21 @@
+@font-face {
+    font-family: Poppins-Bold;
+    src: url('./fonts/poppins/Poppins-Bold.ttf'); 
+}
+
+@font-face {
+    font-family: Poppins-Regular;
+    src: url('./fonts/poppins/Poppins-Regular.ttf'); 
+}
+
+@font-face {
+    font-family: Poppins-Medium;
+    src: url('./fonts/poppins/Poppins-Medium.ttf'); 
+}
+
+.card {
+    display: inline-block;
+    min-width: 100px;
+    background-color: #eeeded;
+    margin: 15px;
+}
