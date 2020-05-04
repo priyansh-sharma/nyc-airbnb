@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import { Button, Form } from 'react-bootstrap';
 import '../style/Welcome.css';
 
 export default class Signup extends Component {
@@ -10,7 +11,8 @@ export default class Signup extends Component {
       username: "",
       password: "",
       firstname: "",
-      lastname: ""
+      lastname: "",
+      error: false
     };
     
     this.handleChange = this.handleChange.bind(this);
@@ -31,7 +33,7 @@ export default class Signup extends Component {
         if (res.ok) {
           this.setState({redirect: true});
         } else {
-          alert("Check your info");
+          this.setState({error: true});
         }
     }, err => {
       console.log(err);
@@ -61,7 +63,8 @@ export default class Signup extends Component {
             <p className="appdescription"> Make an account to start browsing!
                 </p>
 
-            <div className="field-input">
+            {/* <div className="field-input"
+            style={{marginTop: "20px"}}>
               <input 
               className="input" 
               type="text" 
@@ -102,18 +105,69 @@ export default class Signup extends Component {
                 value={this.state.password}
                 onChange={this.handleChange}></input>
                 <span className="input-focus" placeholder="New password"></span>
-            </div>
+            </div> */}
+
+              <Form>
+                <Form.Group>
+                {(this.state.error) ? <a className="error" style={{color: "orangered"}}>Username already taken. Try another</a> : <a></a>}
+                  <Form.Control 
+                  type="text" 
+                  className="boot-input"
+                  name="firstname" 
+                  placeholder="First Name" 
+                  value={this.state.firstname}
+                  onChange={this.handleChange}
+                  style={{marginTop: "20px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Control 
+                  type="text" 
+                  className="boot-input"
+                  name="lastname" 
+                  placeholder="Last Name" 
+                  value={this.state.lastname}
+                  onChange={this.handleChange}
+                  style={{marginTop: "-8px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Control 
+                  type="text" 
+                  className="boot-input"
+                  name="username" 
+                  placeholder="Userame" 
+                  value={this.state.username}
+                  onChange={this.handleChange}
+                  style={{marginTop: "-8px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Control 
+                  type="password" 
+                  className="boot-input"
+                  name="password" 
+                  placeholder="Password" 
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                  style={{marginTop: "-8px", marginBottom: "10px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+              </Form>
 
           </form>
 
-            <div className="login-btn-container">
+          <div className="login-btn-container">
                 <div className="login-btn-wrap">
-                <button className="login-btn"
-                onClick={this.submitNewCredentials}>
-                    Sign Up
-                </button>
+                <Button variant="primary"
+                style = {{width: "100%"}}
+                onClick={this.submitNewCredentials}
+                >Sign up</Button>
                 </div>
-            </div>
+              </div>
 
             <div className="page-break">
                 <span className="no-account">

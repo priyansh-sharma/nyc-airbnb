@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import { Button, Form } from 'react-bootstrap';
 import '../style/Welcome.css';
 
 export default class Welcome extends Component {
@@ -8,7 +9,8 @@ export default class Welcome extends Component {
 
 		this.state = {
 			username: "",
-			password: ""
+      password: "",
+      error: false
     };
     
     this.handleChange = this.handleChange.bind(this);
@@ -28,7 +30,8 @@ export default class Welcome extends Component {
       if (res.ok) {
         this.setState({redirect: true});
       } else {
-        alert("Check your credentials");
+        this.setState({error: true});
+        console.log("yeet");
       }
     }, err => {
       console.log(err);
@@ -56,8 +59,37 @@ export default class Welcome extends Component {
                 
               <p className="appdescription"> Find some peace and quiet in the city that never sleeps.
                 </p>
+              <Form>
 
-              <div className="field-input">
+                <Form.Group>
+                {(this.state.error) ? <a className="error" style={{color: "orangered"}}>Check your credentials and try again</a> : <a></a>}
+                  <Form.Control 
+                  type="text" 
+                  className="boot-input"
+                  name="username" 
+                  placeholder="Username" 
+                  value={this.state.username}
+                  onChange={this.handleChange}
+                  style={{marginTop: "20px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Control 
+                  type="password" 
+                  className="boot-input"
+                  name="password" 
+                  placeholder="Password" 
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                  style={{marginTop: "-8px", marginBottom: "10px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+              </Form>
+                
+
+              {/* <div className="field-input"
+              style= {{marginTop: "20px"}}>
                 <input 
                 className="input" 
                 type="text" 
@@ -68,7 +100,8 @@ export default class Welcome extends Component {
                 <span className="input-focus" placeholder="Username"></span>
               </div>
 
-              <div className="field-input">
+              <div className="field-input"
+              style= {{marginBottom: "20px"}}>
                 <input 
                 className="input" 
                 type="password" 
@@ -76,17 +109,26 @@ export default class Welcome extends Component {
                 value={this.state.password}
                 onChange={this.handleChange}></input>
                 <span className="input-focus" placeholder="Password"></span>
-              </div>
+              </div> */}
             </form>
-              
-              <div className="login-btn-container">
+            
+            <div className="login-btn-container">
+                <div className="login-btn-wrap">
+                <Button variant="primary"
+                style = {{width: "100%"}}
+                onClick={this.submitCredentials}
+                >Login</Button>
+                </div>
+              </div>
+
+              {/* <div className="login-btn-container">
                 <div className="login-btn-wrap">
                   <button className="login-btn"
                   onClick={this.submitCredentials}>
                     Login
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               <div className="page-break">
                 <span className="no-account">
