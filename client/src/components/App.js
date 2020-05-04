@@ -8,8 +8,8 @@ import '../style/App.css';
 import Welcome from './Welcome';
 import Signup from './Signup';
 import Airbnb from './Airbnb';
-import Bar from './Bar';
-import Party from './Party';
+import BarsAndParties from './BarsAndParties';
+import Map from './Map';
 
 class App extends Component {
   render() {
@@ -33,12 +33,12 @@ class App extends Component {
               render={() => (<Airbnb />)}
             />
             <Route
-              path="/bars"
-              render={() => (<Bar />)}
+              path="/barsandparties"
+              render={() => (<BarsAndParties />)}
             />
             <Route
-              path="/parties"
-              render={() => (<Party />)}
+              path="/map"
+              render={() => (<Map />)}
             />
           </Switch>
         </Router>

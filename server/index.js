@@ -34,6 +34,14 @@ app.post('/fewbars', routes.fewbars);
 
 app.post('/manybars', routes.manybars);
 
+app.post('/fewparties', routes.fewparties);
+
+app.post('/manyparties', routes.manyparties);
+
+app.post('/fewbarsandparties', routes.fewbarsandparties);
+
+app.post('/manybarsandparties', routes.manybarsandparties);
+
 // app.post('/party', routes.party);
 
 // app.get('/recommend', routes.recommend);

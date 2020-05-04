@@ -27,10 +27,10 @@ export default class NavBar extends Component {
                         <NavLink href='/airbnbs'>Airbnbs</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href='/bars'>Bars</NavLink>
+                        <NavLink href='/barsandparties'>Bars And Parties</NavLink>
                     </NavItem>  
                     <NavItem>
-                        <NavLink href='/parties'>Parties</NavLink>
+                        <NavLink href='/map'>Map</NavLink>
                     </NavItem>  
                 </Nav>
             </Navbar>

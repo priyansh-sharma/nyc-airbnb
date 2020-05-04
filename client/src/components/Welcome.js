@@ -78,6 +78,7 @@ export default class Welcome extends Component {
                 <span className="input-focus" placeholder="Password"></span>
               </div>
             </form>
+              
               <div className="login-btn-container">
                 <div className="login-btn-wrap">
                   <button className="login-btn"

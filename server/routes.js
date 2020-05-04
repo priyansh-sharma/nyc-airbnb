@@ -77,7 +77,7 @@ async function bnb(req, res) {
   connection = await oracledb.getConnection(dbConfig);
 
   query = 
-  `SELECT id, name, host_name, price, latitude, longitude FROM AIRBNB_NYC
+  `SELECT id, name, host_name, neighbourhood_group, room_type, price, latitude, longitude FROM AIRBNB_NYC
   WHERE neighbourhood_group = '${req.body.borough}'
   AND
   neighbourhood = '${req.body.neighborhood}' AND 
@@ -125,7 +125,6 @@ async function fewbars(req, res) {
     price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
     SELECT * FROM A
     WHERE bar_count <= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count DESC) FROM A)
-    AND ROWNUM <= 5
     ORDER BY bar_count, price`
   
   result = await connection.execute(query);
@@ -167,9 +166,210 @@ async function manybars(req, res) {
   room_type = '${req.body.room_type}' AND
   price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
   SELECT * FROM A
-  WHERE bar_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count DESC) FROM A)
-  AND ROWNUM <= 5
+  WHERE bar_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count ASC) FROM A)
   ORDER BY bar_count DESC, price`
+  
+  result = await connection.execute(query);
+
+  res.send(result);
+
+  await connection.close();
+}
+
+async function fewparties(req, res) {
+  let connection;
+
+  connection = await oracledb.getConnection(dbConfig);
+
+  reset = `UPDATE AIRBNB_NYC SET bar_count = NULL, party_count = NULL`
+
+  await connection.execute(reset);
+
+  update = `UPDATE AIRBNB_NYC
+  SET party_count = (
+  SELECT COUNT(*) FROM NOISE P, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND P.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND P.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99) )
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.input_borough}' AND
+  neighbourhood = '${req.body.input_neighbourhood}' AND 
+  room_type ='${req.body.input_type}' AND
+  price BETWEEN ${req.body.input_lower_price} AND ${req.body.input_upper_price})`
+
+  await connection.execute(update);
+  
+  query = 
+    `WITH A AS
+    (SELECT id, name, host_name, price, latitude, longitude, party_count FROM AIRBNB_NYC
+    WHERE neighbourhood_group = '${req.body.input_borough}' AND
+    neighbourhood = '${req.body.input_neighbourhood}' AND 
+    room_type ='${req.body.input_type}' AND
+    price BETWEEN ${req.body.input_lower_price} AND ${req.body.input_upper_price})
+    SELECT * FROM A
+    WHERE party_count <= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY party_count DESC) FROM A)
+    ORDER BY party_count, price`
+  
+  result = await connection.execute(query);
+
+  res.send(result);
+
+  await connection.close();
+}
+
+async function manyparties(req, res) {
+  let connection;
+
+  connection = await oracledb.getConnection(dbConfig);
+
+  reset = `UPDATE AIRBNB_NYC SET bar_count = NULL, party_count = NULL`
+
+  await connection.execute(reset);
+
+  update = `UPDATE AIRBNB_NYC
+  SET party_count = (
+  SELECT COUNT(*) FROM NOISE P, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND P.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND P.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99) )
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.input_borough}' AND
+  neighbourhood = '${req.body.input_neighbourhood}' AND 
+  room_type ='${req.body.input_type}' AND
+  price BETWEEN ${req.body.input_lower_price} AND ${req.body.input_upper_price})`
+
+  await connection.execute(update);
+
+  query =
+  `WITH A AS
+  (SELECT id, name, host_name, price, latitude, longitude, party_count FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.input_borough}' AND
+  neighbourhood = '${req.body.input_neighbourhood}' AND 
+  room_type ='${req.body.input_type}' AND
+  price BETWEEN ${req.body.input_lower_price} AND ${req.body.input_upper_price})
+  SELECT * FROM A
+  WHERE party_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY party_count ASC) FROM A)
+  ORDER BY party_count DESC, price`
+  
+  result = await connection.execute(query);
+
+  res.send(result);
+
+  await connection.close();
+}
+
+async function fewbarsandparties(req, res) {
+  let connection;
+
+  connection = await oracledb.getConnection(dbConfig);
+
+  reset = `UPDATE AIRBNB_NYC SET bar_count = NULL, party_count = NULL`
+
+  await connection.execute(reset);
+
+  update1 = `UPDATE AIRBNB_NYC
+  SET bar_count = (
+  SELECT COUNT(*) FROM BARS B, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND B.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND B.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99) )
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type ='${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})`
+
+  await connection.execute(update1);
+
+  update2 = `UPDATE AIRBNB_NYC
+  SET party_count = (
+  SELECT COUNT(*) FROM NOISE P, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND P.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND P.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99) )
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type ='${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})`
+
+  await connection.execute(update2);
+
+  query =
+  `WITH A AS
+  (SELECT id, name, host_name, neighbourhood_group, room_type, price, latitude, longitude, party_count, bar_count FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type ='${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
+  SELECT * FROM A
+  WHERE bar_count <= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count DESC) FROM A)
+  AND
+  party_count <= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY party_count DESC) FROM A)
+  ORDER BY bar_count, party_count, price`
+  
+  result = await connection.execute(query);
+
+  res.send(result);
+
+  await connection.close();
+}
+
+async function manybarsandparties(req, res) {
+  let connection;
+
+  connection = await oracledb.getConnection(dbConfig);
+
+  reset = `UPDATE AIRBNB_NYC SET bar_count = NULL, party_count = NULL`
+
+  await connection.execute(reset);
+
+  update1 = `UPDATE AIRBNB_NYC
+  SET bar_count = (
+  SELECT COUNT(*) FROM BARS B, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND B.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND B.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99) )
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type ='${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})`
+
+  await connection.execute(update1);
+
+  update2 = `UPDATE AIRBNB_NYC
+  SET party_count = (
+  SELECT COUNT(*) FROM NOISE P, AIRBNB_NYC A
+  WHERE A.id = AIRBNB_NYC.id 
+  AND P.latitude BETWEEN A.latitude - (${req.body.radius} / 69.2) AND A.latitude +  (${req.body.radius} / 69.2)
+  AND P.longitude BETWEEN A.longitude - (${req.body.radius} / 68.99) AND A.longitude + (${req.body.radius} / 68.99) )
+  WHERE id IN 
+  (SELECT id FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type ='${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})`
+
+  await connection.execute(update2);
+
+  query =
+  `WITH A AS
+  (SELECT id, name, host_name, neighbourhood_group, room_type, price, latitude, longitude, party_count, bar_count FROM AIRBNB_NYC
+  WHERE neighbourhood_group = '${req.body.borough}' AND
+  neighbourhood = '${req.body.neighborhood}' AND 
+  room_type ='${req.body.room_type}' AND
+  price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
+  SELECT * FROM A
+  WHERE bar_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count ASC) FROM A)
+  AND
+  party_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY party_count ASC) FROM A)
+  ORDER BY bar_count DESC, party_count DESC, price`
   
   result = await connection.execute(query);
 
@@ -186,5 +386,9 @@ module.exports = {
     login: login,
     bnb: bnb,
     fewbars: fewbars,
-    manybars: manybars
+    manybars: manybars,
+    fewparties: fewparties,
+    manyparties: manyparties,
+    fewbarsandparties: fewbarsandparties,
+    manybarsandparties: manybarsandparties
 }
