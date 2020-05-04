@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Card, ListGroup, ListGroupItem
 } from 'react-bootstrap';
+import '../style/Card.css';
 
 class ListingCard extends Component {
     constructor (props) {
@@ -16,7 +17,8 @@ class ListingCard extends Component {
               <Card.Subtitle className="mb-2 text-muted">{this.props.borough}, NY</Card.Subtitle>
             </Card.Body>
             <ListGroup className="list-group-flush">
-                <ListGroupItem>{this.props.num_bars} bars nearby</ListGroupItem>
+                {(this.props.is_bar_page) ? <ListGroupItem>{this.props.num_bars} bars nearby</ListGroupItem> : <a></a>}
+                {(this.props.is_bar_page) ? <ListGroupItem>{this.props.num_parties} parties nearby</ListGroupItem> : <a></a>}
                 <ListGroupItem>{this.props.room_type}</ListGroupItem>
                 <ListGroupItem>${this.props.price}</ListGroupItem>
                 <ListGroupItem>Hosted by {this.props.host}</ListGroupItem>

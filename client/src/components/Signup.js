@@ -1,66 +1,186 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
+import { Button, Form } from 'react-bootstrap';
 import '../style/Welcome.css';
 
 export default class Signup extends Component {
-  
-  componentDidMount() {
-    // Send an HTTP request to the server.
-    fetch("http://localhost:8081/connection",
-    {
-      method: 'GET' // The type of HTTP request.
-    }).then(res => {
-      // Convert the response data to a JSON.
-      return res.text();
-    }, err => {
-      // Print the error if there is one.
-      console.log(err);
-    }).then(res => console.log(res))
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: "",
+      password: "",
+      firstname: "",
+      lastname: "",
+      error: false
+    };
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.submitNewCredentials = this.submitNewCredentials.bind(this);
   }
+
+  submitNewCredentials() {
+    let credentials = {username : this.state.username, password : this.state.password};
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+    };
+    console.log(requestOptions.body);
+    fetch('http://localhost:8081/signup', requestOptions)
+      .then(res => {
+        res.json();
+        if (res.ok) {
+          this.setState({redirect: true});
+        } else {
+          this.setState({error: true});
+        }
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  handleChange(e) {
+    e.preventDefault();
+    let target = e.target;
+    this.setState({
+      [target.name]: target.value
+    });
+  }
+
   render() {
+    if (this.state.redirect) {
+      return <Redirect push to="/airbnbs" />;
+    }
     return(
-      <div>
+    <div>
         <div className="login-container">
-          <div className="login-panel">
-            <form className="login-form">
-              <span className="title">
-                Welcome
-              </span>
-              <img className="logo" src={require('../style/NoisYC.png')} alt="Logo"></img>
+        <div className="login-panel">
+            <form className="login-form"
+            onSubmit={this.submitNewCredentials}>
+            <img className="logo" src={require('../style/NoisYC.png')} alt="Logo"></img>
                 
-              <div class="field-input">
-                <input class="input" type="text" name="username"></input>
-                <span class="input-focus" placeholder="Username"></span>
-              </div>
+            <p className="appdescription"> Make an account to start browsing!
+                </p>
 
-              <div class="field-input">
-                <input class="input" type="password" name="password"></input>
-                <span class="input-focus" placeholder="Password"></span>
-              </div>
+            {/* <div className="field-input"
+            style={{marginTop: "20px"}}>
+              <input 
+              className="input" 
+              type="text" 
+              name="firstname"
+              value={this.state.firstname}
+              onChange={this.handleChange}
+              ></input>
+              <span className="input-focus" placeholder="First name"></span>
+            </div>
+            <div className="field-input">
+              <input 
+              className="input" 
+              type="text" 
+              name="lastname"
+              value={this.state.lastname}
+              onChange={this.handleChange}
+              ></input>
+              <span className="input-focus" placeholder="Last name"></span>
+            </div>
+            <div className="field-input">
+                <input 
+                className="input" 
+                type="text" 
+                name="username"
+                value={this.state.username}
+                onChange={this.handleChange}
+                ></input>
+                <span className="input-focus" placeholder="New username"></span>
+            </div>
+            <div className="field-input">
+                <input 
+                className="input" 
+                type="password" 
+                name="password"
+                value={this.state.password}
+                onChange={this.handleChange}></input>
+                <span className="input-focus" placeholder="New password"></span>
+            </div> */}
 
-              <div class="login-btn-container">
-                <div class="login-btn-wrap">
-                  <button class="login-btn">
-                    Login
-                  </button>
+              <Form>
+                <Form.Group>
+                {(this.state.error) ? <a className="error" style={{color: "orangered"}}>Username already taken. Try another</a> : <a></a>}
+                  <Form.Control 
+                  type="text" 
+                  className="boot-input"
+                  name="firstname" 
+                  placeholder="First Name" 
+                  value={this.state.firstname}
+                  onChange={this.handleChange}
+                  style={{marginTop: "20px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Control 
+                  type="text" 
+                  className="boot-input"
+                  name="lastname" 
+                  placeholder="Last Name" 
+                  value={this.state.lastname}
+                  onChange={this.handleChange}
+                  style={{marginTop: "-8px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Control 
+                  type="text" 
+                  className="boot-input"
+                  name="username" 
+                  placeholder="Userame" 
+                  value={this.state.username}
+                  onChange={this.handleChange}
+                  style={{marginTop: "-8px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Control 
+                  type="password" 
+                  className="boot-input"
+                  name="password" 
+                  placeholder="Password" 
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                  style={{marginTop: "-8px", marginBottom: "10px", backgroundColor: "#dcdcdc2b"}}
+                />
+                </Form.Group>
+              </Form>
+
+          </form>
+
+          <div className="login-btn-container">
+                <div className="login-btn-wrap">
+                <Button variant="primary"
+                style = {{width: "100%"}}
+                onClick={this.submitNewCredentials}
+                >Sign up</Button>
                 </div>
               </div>
 
-              <div class="page-break">
-                <span class="no-account">
-                  Have an account? Return to login
+            <div className="page-break">
+                <span className="no-account">
+                Already have an account? Login
                 </span>
 
-                <a class="signup" href="/">
-                  Here
+                <a className="signup" href="/">
+                Here
                 </a>
-              </div>
+            </div>
 
-            </form>
             
-          </div>
+            
         </div>
-      </div> 
+        </div>
+    </div> 
     )
   }
 }
-
