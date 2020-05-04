@@ -26,7 +26,7 @@ class BarsAndParties extends Component {
     this.state = {
       airbnbs: [],
       noise: false,
-      distance: 1000,
+      distance: 2000,
       unit: "feet"
     }
     this.nextPage = this.nextPage.bind(this);
@@ -35,7 +35,7 @@ class BarsAndParties extends Component {
 
   async componentDidMount() {
     let radius = (this.state.unit === "feet" ? this.state.distance / 5280 : this.state.distance);
-      console.log(radius);
+      // console.log(radius);
       let url;
       console.log("beginning" + this.state.noise)
       if (this.state.noise){
@@ -48,6 +48,7 @@ class BarsAndParties extends Component {
 
       if(bnbFields) {
         bnbFields.radius = radius;
+        console.log(bnbFields);
         await fetch(url,
         {
           method: 'POST',
@@ -160,7 +161,7 @@ class BarsAndParties extends Component {
               <InputGroup>
                 <Form.Label>I care about noise within...</Form.Label>
                 <FormControl
-                  placeholder="1000"
+                  placeholder="2000"
                   md = "3"
                   name="distance"
                   onChange={this.handleChange}
