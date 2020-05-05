@@ -18,7 +18,8 @@ constructor (props) {
       neighborhood: "...",
       min_price: 0,
       max_price: 5000,
-      listings : []
+      listings : [],
+      nonefound : false
     }
 
   this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -56,22 +57,28 @@ submitFilter() {
 		console.log(err);
 	}).then((airbnbsList) => {
         console.log(airbnbsList);
-        if (!airbnbsList.rows) alert("No listings found");
-        let airbnbCards = airbnbsList.rows.map((airbnb, i) => 
-        <ListingCard 
-        key = {airbnb.ID}
-        name={airbnb.NAME}
-        borough={airbnb.NEIGHBOURHOOD_GROUP}
-        room_type={airbnb.ROOM_TYPE}
-        price={airbnb.PRICE}
-        host={airbnb.HOST_NAME}
-        lat={airbnb.LATITUDE}
-        long={airbnb.LONGITUDE}
-        />);
-
-        this.setState({
+        if (airbnbsList.rows.length == 0) {
+          this.setState({
+            nonefound: true
+          });
+        } else {
+          let airbnbCards = airbnbsList.rows.map((airbnb, i) => 
+          <ListingCard 
+          key = {airbnb.ID}
+          name={airbnb.NAME}
+          borough={airbnb.NEIGHBOURHOOD_GROUP}
+          room_type={airbnb.ROOM_TYPE}
+          price={airbnb.PRICE}
+          host={airbnb.HOST_NAME}
+          lat={airbnb.LATITUDE}
+          long={airbnb.LONGITUDE}
+          />);
+          this.setState({
+            nonefound: false,
             listings : airbnbCards
-        });
+          });
+        }
+      
     }, err => {
         console.log(err);
     });
@@ -154,7 +161,7 @@ render() {
           </div>
           <div className="cards-container">
           <Container> 
-            
+            {(this.state.nonefound) ? <a className="error" style={{color: "gray"}}>No listings found. Try another search.</a> : <a></a>}  
             {this.state.listings}
             
           </Container>

@@ -27,7 +27,8 @@ class BarsAndParties extends Component {
       airbnbs: [],
       noise: false,
       distance: 2000,
-      unit: "feet"
+      unit: "feet",
+      nonefound: false
     }
     this.nextPage = this.nextPage.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -58,8 +59,13 @@ class BarsAndParties extends Component {
         }).then(
           (res) => res.json())
         .then((bnbList) => {
-          console.log(bnbList)
-          let airbnbCards = bnbList.rows.map(
+          console.log(bnbList);
+          if (bnbList.rows.length == 0) {
+            this.setState({
+              nonefound: true
+            });
+          } else {
+            let airbnbCards = bnbList.rows.map(
             (x => <ListingCard
               key = {x.ID}
               is_bar_page = {true}
@@ -70,8 +76,11 @@ class BarsAndParties extends Component {
               host = {x.HOST_NAME} room_type = {x.ROOM_TYPE} price = {x.PRICE}/>)
           )
             this.setState({
-              airbnbs: airbnbCards
+              airbnbs: airbnbCards,
+              nonefound: false
             });
+          }
+          
         })
       }
     }
@@ -146,6 +155,7 @@ class BarsAndParties extends Component {
 
           <div className="cards-container">
           <Container> 
+          {(this.state.nonefound) ? <a className="error" style={{color: "gray"}}>No listings found. Try another search.</a> : <a></a>}
             {this.state.airbnbs}
           </Container>
           </div>
