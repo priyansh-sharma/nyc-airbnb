@@ -153,7 +153,7 @@ class BarsAndParties extends Component {
             </Row>
           </Container>
 
-          <div className="cards-container">
+          <div className="cards-container2">
           <Container> 
           {(this.state.nonefound) ? <a className="error" style={{color: "gray"}}>No listings found. Try another search.</a> : <a></a>}
             {this.state.airbnbs}
