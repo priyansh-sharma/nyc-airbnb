@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 
 const app = express();
 
-const mongourl = 'mongodb+srv://jessexu:powqy4-xeNrex-hokwim@550cluster-p0sye.mongodb.net/test?retryWrites=true&w=majority'
+const mongourl = 'mongodb+srv://admin:davweq-heRqon-nuphi8@550cluster-p0sye.mongodb.net/test?retryWrites=true&w=majority'
 mongoose.connect(mongourl)
 .then(console.log("mongodb connected"))
 
