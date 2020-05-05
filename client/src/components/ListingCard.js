@@ -12,6 +12,7 @@ class ListingCard extends Component {
     render () {
         return (
         <Card>
+            <Card.Header>{this.props.result_num}</Card.Header>
             <Card.Body>
               <Card.Title>{this.props.name}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">{this.props.borough}, NY</Card.Subtitle>

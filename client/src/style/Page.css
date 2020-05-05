@@ -37,8 +37,8 @@
 .cards-container {
     width: 100%;
     background-color: #efefeff6;
-    min-height: 27.5em;
-    max-height: 27.5em;
+    min-height: 26.5em;
+    max-height: 26.5em;
     overflow-y: auto;
     border-bottom: 1px solid #adadad6b;
 }

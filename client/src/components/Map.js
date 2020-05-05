@@ -16,20 +16,20 @@ export class MapPage extends Component {
 
     this.state = {
       airbnbs: [],
-      markers: [],
-      activeName: ""
+      markers: []
     }
 
     this.onMarkerClick = this.onMarkerClick.bind(this);
   }
   
   componentDidMount() {
-    
-    // console.log(bnbs);
     if (this.props.location.state) {
       let bnbs = JSON.parse(this.props.location.state);
       let airbnbCards = bnbs.map((listing, i) => 
         <ListingCard
+            result_num = {"#" + (i+1).toString()}
+            lat = {listing.props.lat}
+            long = {listing.props.long}
             key = {listing.key}
             is_bar_page = {true}
             num_bars = {listing.props.num_bars}
@@ -47,12 +47,12 @@ export class MapPage extends Component {
 
         let markerObjs = bnbs.map((x, i) => 
         <Marker
+            label={(i+1).toString()}
             key = {x.key}
             name = {x.props.name}
             ref={this.myRef}
             position = {{lat: x.props.lat, lng: x.props.long}}
-            onClick = {this.onMarkerClick}
-          />);
+        onClick = {this.onMarkerClick}/>);
 
         this.setState({
           markers: markerObjs
@@ -60,15 +60,33 @@ export class MapPage extends Component {
     }
   }
 
-  onMarkerClick(e) {
-    console.log(this.myRef.current);
-    e.map.setZoom(15);
-    e.map.setCenter(e.position);
-    console.log(e.name);
-    this.setState({
-      activeName: e.name
-    });
-  }
+  onMarkerClick = (marker, e) =>{
+  this.setState({
+    activeMarker: marker,
+    showingInfoWindow: true,
+    activeName: e.name
+  });
+  console.log(this.state)
+  console.log(this.myRef.current);
+  e.map.setZoom(15);
+  e.map.setCenter(e.position);
+  console.log(e.name);
+}
+
+  // onMarkerClick(e) {
+  //   this.setState({
+  //     selectedPlace: props,
+  //     activeMarker: marker,
+  //     showingInfoWindow: true
+  //   });
+  //   console.log(this.myRef.current);
+  //   e.map.setZoom(15);
+  //   e.map.setCenter(e.position);
+  //   console.log(e.name);
+  //   this.setState({
+  //     activeName: e.name
+  //   });
+  // }
 
   render() {
     return(
@@ -88,8 +106,8 @@ export class MapPage extends Component {
             lng: -74
           }}
           containerStyle={{position: "fixed", left: "40%", right: "0"}}>
-
           {this.state.markers}
+
 
           </Map>
           

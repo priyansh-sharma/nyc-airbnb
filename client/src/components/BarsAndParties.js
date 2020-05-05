@@ -14,7 +14,7 @@ function ToggleButton() {
       variant="primary"
       onClick={() => setClicked(!isClicked)}
     >
-      {isClicked ? 'lots of bars and parties' : 'no bars and parties'}
+      {isClicked ? 'near the action' : 'away from the action'}
     </Button>
   );
 }
@@ -35,7 +35,6 @@ class BarsAndParties extends Component {
 
   async componentDidMount() {
     let radius = (this.state.unit === "feet" ? this.state.distance / 5280 : this.state.distance);
-      // console.log(radius);
       let url;
       console.log("beginning" + this.state.noise)
       if (this.state.noise){
@@ -70,7 +69,6 @@ class BarsAndParties extends Component {
               lat = {x.LATITUDE} long = {x.LONGITUDE} 
               host = {x.HOST_NAME} room_type = {x.ROOM_TYPE} price = {x.PRICE}/>)
           )
-  
             this.setState({
               airbnbs: airbnbCards
             });
@@ -87,55 +85,6 @@ class BarsAndParties extends Component {
       console.log(target.value);
     }
 
-    // async submitFilter() {
-    //   const MILES_ONE_DEGREE = 69;
-    // let radius;
-    //   if (this.state.unit === "feet") {
-    //     radius = (this.state.distance / 5280) / MILES_ONE_DEGREE;
-    //   } else {
-    //     radius = (this.state.distance) / MILES_ONE_DEGREE;
-    //   }
-    //   let url;
-    //   console.log("beginning" + this.state.noise)
-    //   if (this.state.noise){
-    //     url = "http://localhost:8081/manybarsandparties";
-    //   } else {
-    //     url = "http://localhost:8081/fewbarsandparties";
-    //   }
-      
-    //   let bnbFields = this.props.location.state;
-
-    //   if(bnbFields) {
-    //     bnbFields.radius = radius;
-    //     await fetch(url,
-    //     {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       },
-    //       body: JSON.stringify(bnbFields)
-    //     }).then(
-    //       (res) => res.json())
-    //     .then((bnbList) => {
-    //       console.log(bnbList)
-    //       let airbnbCards = bnbList.rows.map(
-    //         (x => <ListingCard
-    //           key = {x.ID}
-    //           is_bar_page = {true}
-    //           num_bars = {x.BAR_COUNT}
-    //           num_parties = {x.PARTY_COUNT}
-    //           name={x.NAME} borough={x.NEIGHBOURHOOD_GROUP} 
-    //           lat = {x.LATITUDE} long = {x.LONGITUDE} 
-    //           host = {x.HOST_NAME} room_type = {x.ROOM_TYPE} price = {x.PRICE}/>)
-    //       )
-  
-    //         this.setState({
-    //           airbnbs: airbnbCards
-    //         });
-    //     })
-    //   }
-    // }
-
     nextPage() {
       this.setState({redirect: true});
     }
@@ -151,33 +100,28 @@ class BarsAndParties extends Component {
       return (
         <div>
           <NavBar/>
-          <div className = "form-container">
-          
-              <Col md="auto"><h3 style={{textAlign: "center"}}>I want my Airbnb to be near</h3></Col>
-              <div className="col" onClick={()=> {
+          <Container fluid>
+
+          <h1 class="display-4">
+            <div class="row justify-content-md-center">
+              <div class="mr-2">I want my Airbnb to be</div>
+              <div class="ml-2"><div onClick={()=> {
                 this.setState(
-                  {noise: !this.state.noise}, () => {this.componentDidMount()})}}><ToggleButton/></div>
-              
-              <InputGroup>
-                <Form.Label>I care about noise within...</Form.Label>
-                <FormControl
+                  {noise: !this.state.noise})}}><ToggleButton/></div></div>
+            </div>
+          </h1>
+          <Row className="justify-content-md-center">
+            <Col sm="2">
+                <InputGroup.Text id="basic-addon1">find noise within: </InputGroup.Text>
+                </Col>
+                <Col sm="2">
+                <FormControl 
                   placeholder="2000"
-                  md = "3"
                   name="distance"
                   onChange={this.handleChange}
                 />
-
-                {/* <DropdownButton
-                  as={InputGroup.Append}
-                  variant="outline-secondary"
-                  title={this.state.unit}
-                  name="unit"
-                  onChange={this.handleChange}
-                >
-                  <Dropdown.Item value="feet">feet</Dropdown.Item>
-                  <Dropdown.Item value="miles">miles</Dropdown.Item>
-                </DropdownButton> */}
-
+                </Col>
+                <Col sm="1">
                 <Form.Control 
                 name="room_type" 
                 as={InputGroup.Append} 
@@ -186,25 +130,29 @@ class BarsAndParties extends Component {
                   <option value="feet">feet</option>
                   <option value="miles">miles</option>
                 </Form.Control>
-              </InputGroup>
+                </Col>
+            </Row>
+            <Row><div>
 
-              <Button
+              </div></Row>
+            <Row className="justify-content-md-center"> 
+            <Button className="mt-3 mb-3"
               variant="outline-primary"
               style={{height: "40px", float: "right"}}
               onClick={() => {this.componentDidMount()}}
-              >Submit Filter</Button>
-     
-              
-          </div>
+              >I'm ready for my results!</Button>
+            </Row>
+          </Container>
+
           <div className="cards-container">
           <Container> 
-            
             {this.state.airbnbs}
-            
           </Container>
           </div>
-          <div className="footer-container">
-            <Button 
+
+
+          <div className="footer">
+            <Button
               variant="outline-secondary"
               style= {{marginLeft: "10px", float: "left", marginTop: "9px"}}
               href='/airbnbs'
