@@ -307,9 +307,9 @@ async function fewbarsandparties(req, res) {
   room_type ='${req.body.room_type}' AND
   price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
   SELECT * FROM A
-  WHERE bar_count <= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count DESC) FROM A)
+  WHERE bar_count <= (SELECT PERCENTILE_CONT(0.85) WITHIN GROUP (ORDER BY bar_count DESC) FROM A)
   AND
-  party_count <= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY party_count DESC) FROM A)
+  party_count <= (SELECT PERCENTILE_CONT(0.85) WITHIN GROUP (ORDER BY party_count DESC) FROM A)
   ORDER BY bar_count, party_count, price`
   
   result = await connection.execute(query);
@@ -366,9 +366,9 @@ async function manybarsandparties(req, res) {
   room_type ='${req.body.room_type}' AND
   price BETWEEN ${req.body.min_price} AND ${req.body.max_price})
   SELECT * FROM A
-  WHERE bar_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY bar_count ASC) FROM A)
+  WHERE bar_count >= (SELECT PERCENTILE_CONT(0.85) WITHIN GROUP (ORDER BY bar_count ASC) FROM A)
   AND
-  party_count >= (SELECT PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY party_count ASC) FROM A)
+  party_count >= (SELECT PERCENTILE_CONT(0.85) WITHIN GROUP (ORDER BY party_count ASC) FROM A)
   ORDER BY bar_count DESC, party_count DESC, price`
   
   result = await connection.execute(query);
