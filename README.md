@@ -17,3 +17,31 @@ A Node.js application for finding an Airbnb in the quietest (or noisiest!) parts
 Note: You may also need to run npm install react-scripts --save if you get an error message that “react-scripts is not recognized as an internal or external command”.
 
 instructions modified from cis 550
+
+## Dependencies
+
+More information can be found in each of the `package.json` files in .\client and .\server
+
+- @testing-library/jest-dom"
+- @testing-library/react
+- @testing-library/user-event
+- bootstrap
+- google-maps-react
+- react
+- react-bootstrap
+- react-dom
+- react-router-dom
+- react-scripts
+- reactstrap
+- body-parser
+- cors
+- db
+- express
+- express-session
+- mongoose
+- morgan
+- mysql
+- oracledb
+- passport
+- passport-local
+- styled-components
